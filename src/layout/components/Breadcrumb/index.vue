@@ -43,6 +43,7 @@
 <script setup lang="ts">
 import type { RouteLocationMatched, RouteMeta } from 'vue-router'
 import AppIcon from '@/components/AppIcon/index.vue'
+import { HOME_ROUTE_NAME, HOME_ROUTE_PATH } from '@/constants/app'
 
 defineOptions({ name: 'Breadcrumb' })
 const route = useRoute()
@@ -54,8 +55,6 @@ interface BreadcrumbItem {
 }
 
 /** 首页路由标识（见 router/routes/modules/main.ts：name 为 home，path 为 /dashboard） */
-const HOME_ROUTE_NAME = 'home'
-const HOME_ROUTE_PATH = '/dashboard'
 
 // 辅助函数：判断是否为首页
 const isHomeRoute = (record?: RouteLocationMatched): boolean => {

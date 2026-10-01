@@ -4,6 +4,7 @@ import defAva from '@/assets/images/profile.jpg'
 import { isEmpty, isHttp } from '@/utils/validate'
 import { ElMessageBox } from 'element-plus'
 import { usePermissionStore } from './permission'
+import { useTagsViewStore } from './tagsView'
 
 export const useUserStore = defineStore(
   'user',
@@ -105,6 +106,8 @@ export const useUserStore = defineStore(
             // 清除动态路由状态，使下次登录重新拉取；
             // 已注册到 router 的路由会在下次 generateRoutes 时被移除。
             usePermissionStore().resetRoutes()
+            // 同时清空标签页与 keep-alive 缓存，避免下一个账号看到上一个账号的标签
+            useTagsViewStore().reset()
             resolve()
           })
           .catch((error: any) => {

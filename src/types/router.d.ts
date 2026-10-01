@@ -3,7 +3,7 @@ import 'vue-router'
 /**
  * 扩展 vue-router 的 RouteMeta，声明本项目用到的路由元信息字段。
  * 来源：后端 RouterVo.meta（对应 Java 的 MetaVo），
- * 以及前端转换时从 RouterVo 补充的 hidden / alwaysShow。
+ * 以及前端转换时从 RouterVo 补充的 hidden / alwaysShow / cacheName。
  */
 declare module 'vue-router' {
   interface RouteMeta {
@@ -21,5 +21,13 @@ declare module 'vue-router' {
     hidden?: boolean
     /** 只有一个子路由时是否仍显示父级菜单（来自 RouterVo.alwaysShow） */
     alwaysShow?: boolean
+    /** 是否固定为标签页（TagsViews 里不可关闭的标签，如首页） */
+    affix?: boolean
+    /**
+     * <KeepAlive> 缓存用的组件名。
+     * 由后端下发的 component 字符串派生（见 utils/route.ts 的 componentToName），
+     * 页面组件需用 defineOptions({ name }) 声明同名 name 才会真正被缓存。
+     */
+    cacheName?: string
   }
 }

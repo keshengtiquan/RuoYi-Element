@@ -59,6 +59,40 @@ export function normalizeRoutePath(
 }
 
 // ---------------------------------------------------------------------------
+// keep-alive 缓存名
+// ---------------------------------------------------------------------------
+
+/** 把一个路径片段转成 PascalCase（'tree-table' → 'TreeTable'、'list' → 'List'） */
+function toPascalCase(segment: string): string {
+  return segment
+    .split(/[-_\s]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('')
+}
+
+/**
+ * 由后端下发的 `component` 字符串派生稳定的组件名，用于 <KeepAlive> 缓存。
+ *
+ * - `system/user/index` → `SystemUser`
+ * - `monitor/cache/list` → `MonitorCacheList`
+ *
+ * 末尾的 `index` 会被去掉，所以「目录 + index.vue」与「同名叶子文件」得到同一个名字。
+ *
+ * ⚠️ 约定：页面组件必须用 `defineOptions({ name })` 声明**同名**的 name，
+ * `<KeepAlive :include>` 是按组件名匹配的；没声明只会「不被缓存」，不会报错。
+ * （Vue 3 会从文件名推断出 `__name`，index.vue 推出来是 'index'，所以不能省略声明。）
+ */
+export function componentToName(component?: string | null): string | undefined {
+  const parts = (component ?? '').split('/').filter(Boolean)
+  if (parts.length > 1 && parts[parts.length - 1]?.toLowerCase() === 'index') {
+    parts.pop()
+  }
+  const name = parts.map(toPascalCase).join('')
+  return name || undefined
+}
+
+// ---------------------------------------------------------------------------
 // 侧边栏菜单渲染
 // ---------------------------------------------------------------------------
 

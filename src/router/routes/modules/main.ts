@@ -18,7 +18,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/test.vue'),
         meta: {
           title: '首页',
-          icon: 'user'
+          icon: 'user',
+          // 固定标签：TagsViews 里不可关闭，且批量关闭（左侧/右侧/其它/全部）都会保留它
+          affix: true,
+          // keep-alive 缓存名，需与 views/test.vue 的 defineOptions({ name }) 一致
+          cacheName: 'DashboardHome'
         }
       }
     ]

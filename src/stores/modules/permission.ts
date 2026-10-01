@@ -1,6 +1,6 @@
 import type { RouteComponent, RouteMeta, RouteRecordRaw, Router } from 'vue-router'
 import { getRoutersApi, type RouterVo } from '@/api/auth'
-import { isExternalUrl, normalizeRoutePath } from '@/utils/route'
+import { componentToName, isExternalUrl, normalizeRoutePath } from '@/utils/route'
 import Layout from '@/layout/index.vue'
 import ParentView from '@/components/ParentView/index.vue'
 import InnerLink from '@/components/InnerLink/index.vue'
@@ -53,6 +53,18 @@ function resolveComponent(component?: string): RouteComponentLazy {
 }
 
 /**
+ * 该 component 字符串对应的 keep-alive 缓存名。
+ * 只有「真实存在页面文件」的菜单才返回名字：布局/ParentView/InnerLink 之类的
+ * 内置组件不参与缓存，找不到文件的兜底 404 也不缓存。
+ */
+function resolveCacheName(component?: string): string | undefined {
+  if (!component || !viewModules[`../../views/${component}.vue`]) {
+    return undefined
+  }
+  return componentToName(component)
+}
+
+/**
  * 把后端下发的一条 RouterVo 转换为 vue-router 路由记录。
  *
  * @param item 后端下发的路由
@@ -80,7 +92,9 @@ function transformRoute(item: RouterVo, isTopLevel = true): RouteRecordRaw {
     external: external || undefined,
     // hidden / alwaysShow 收进 meta，避免给路由记录挂非标准字段（侧边栏读 route.meta.hidden）
     hidden: item.hidden,
-    alwaysShow: item.alwaysShow
+    alwaysShow: item.alwaysShow,
+    // keep-alive 缓存名（TagsViews 用它决定该页缓存到哪个组件名下）
+    cacheName: resolveCacheName(item.component)
   }
 
   const children = item.children?.length
