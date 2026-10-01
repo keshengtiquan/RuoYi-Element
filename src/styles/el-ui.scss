@@ -1,0 +1,54 @@
+:root {
+  --el-border-radius-base: 7px !important;
+  --el-border-radius-small: 5px !important;
+  --el-popover-border-radius: calc(var(--el-border-radius-base) + 4px);
+}
+
+.el-input .el-input__wrapper.is-focus,
+.el-textarea .el-textarea__inner:focus,
+.el-textarea .el-textarea__inner.is-focus,
+.el-select .el-select__wrapper:not(.is-disabled).is-focused,
+.el-cascader .el-input.el-input--suffix .el-input__wrapper.is-focus,
+.el-cascader .el-input.el-input--suffix.is-focus .el-input__wrapper,
+.el-input.el-date-editor.is-focus .el-input__wrapper,
+.el-range-editor.el-input__wrapper.is-active:not(.is-disabled),
+body .el-input-number:not(.is-disabled) .el-input .el-input__wrapper.is-focus {
+  box-sizing: border-box;
+  background: transparent;
+  box-shadow:
+    0 0 0 1px var(--el-color-primary) inset,
+    0 0 2px 3px var(--el-color-primary-light-8);
+}
+
+/* 基础态：外发光为同尺寸透明，过渡时只淡入颜色、不产生尺寸变化 */
+.el-input .el-input__wrapper,
+.el-textarea .el-textarea__inner,
+.el-select .el-select__wrapper,
+.el-date-editor.el-range-editor.el-input__wrapper {
+  transition:
+    box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.el-dropdown-menu {
+  --el-popper-border-radius: 10px !important;
+  padding: 6px !important;
+  border-radius: 10px !important;
+  border: none !important;
+
+  .el-dropdown-menu__item {
+    padding: 5px 8px !important;
+    border-radius: 6px !important;
+
+    &:hover:not(.is-disabled) {
+      color: var(--el-text-color-primary) !important;
+      background-color: var(--el-fill-color) !important;
+    }
+
+    &:focus:not(.is-disabled) {
+      color: var(--el-text-color-primary) !important;
+      background-color: var(--el-fill-color) !important;
+    }
+  }
+}
