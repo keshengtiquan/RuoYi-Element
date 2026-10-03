@@ -1,9 +1,5 @@
+import { DEFAULT_TAGS_VIEW_STYLE, type TagsViewStyle } from '@/layout/components/TagsViews/styles'
 import { DEFAULT_LAYOUT, type LayoutName } from '@/layout/layouts'
-import {
-  DEFAULT_TAGS_VIEW_STYLE,
-  resolveTagsViewStyle,
-  type TagsViewStyle
-} from '@/layout/components/TagsViews/styles'
 
 /**
  * 应用级 UI 状态（布局、侧边栏折叠、标签样式等）。
@@ -51,16 +47,7 @@ export const useAppStore = defineStore(
   {
     persist: {
       key: 'app',
-      storage: localStorage,
-      /**
-       * 持久化恢复后校验样式名：本地存储里可能留着已删除的样式（如早期的 'google'）。
-       * 非法值一律回退到默认样式，否则 TagItem 会读到 undefined 的 class 映射而报错。
-       * 注意这里拿不到 setup 作用域里的 ref，只能通过 context.store 读写。
-       */
-      afterHydrate: (context) => {
-        const store = context.store as unknown as { tagStyle: TagsViewStyle }
-        store.tagStyle = resolveTagsViewStyle(store.tagStyle)
-      }
+      storage: localStorage
     }
   }
 )

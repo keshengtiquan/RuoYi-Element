@@ -40,7 +40,11 @@ interface TagRouteLike {
   } | null
 }
 
-/** 中转页路由前缀（「重新加载」用的 /redirect/xxx，不应变成标签） */
+/**
+ * 中转页路由前缀。
+ * 早期「重新加载」用 /redirect/xxx 中转页实现，现已改为 refreshContent()（不换路由）；
+ * 这里保留过滤：万一有菜单把 path 配成 /redirect/xxx，也不会被生成成标签。
+ */
 const REDIRECT_PATH_PREFIX = '/redirect'
 
 export const useTagsViewStore = defineStore('tagsView', () => {
@@ -49,6 +53,45 @@ export const useTagsViewStore = defineStore('tagsView', () => {
 
   /** 需要 <KeepAlive> 缓存的组件名列表 */
   const cachedViews = ref<string[]>([])
+
+  /**
+   * 内容区是否渲染。
+   * AppMain 里写作 `<component v-if="contentVisible" :is="Component" />`：
+   * 全局刷新时短暂置 false 再置回 true，让路由组件被销毁并重建。
+   */
+  const contentVisible = ref(true)
+
+  /** 全局刷新的定时器（连续触发时只保留最后一次） */
+  let refreshTimer: ReturnType<typeof setTimeout> | undefined
+
+  /**
+   * 全局刷新：销毁并重建内容区的路由组件。
+   *
+   * 三个要点：
+   * 1. 先清空 include（cachedViews）：否则 <KeepAlive> 对 v-if 消失的组件只会 deactivate，
+   *    重新渲染时又把旧实例取回来，等于没刷新；
+   * 2. 再把 contentVisible 置 false（此刻组件被真正销毁），200ms 后置回 true 并恢复 include，
+   *    当前页面重新挂载并重新纳入缓存；其它标签的缓存已在这一轮全部失效，下次进去时重建——即「全局刷新」；
+   * 3. 延迟必须存在：同一个事件循环里 false→true 会被 Vue 合并成一次渲染，组件根本不会重建。
+   *
+   * @param delay 销毁到重建之间的间隔（毫秒）
+   */
+  const refreshContent = (delay = 200): void => {
+    const cachedNames = [...cachedViews.value]
+
+    cachedViews.value = []
+    contentVisible.value = false
+
+    if (refreshTimer) {
+      clearTimeout(refreshTimer)
+    }
+
+    refreshTimer = setTimeout(() => {
+      contentVisible.value = true
+      cachedViews.value = cachedNames
+      refreshTimer = undefined
+    }, delay)
+  }
 
   /**
    * 该路由是否应该生成标签：
@@ -199,6 +242,7 @@ export const useTagsViewStore = defineStore('tagsView', () => {
   return {
     visitedViews,
     cachedViews,
+    contentVisible,
     addView,
     addVisitedView,
     addCachedView,
@@ -210,6 +254,7 @@ export const useTagsViewStore = defineStore('tagsView', () => {
     delAllViews,
     toggleAffix,
     initAffixTags,
+    refreshContent,
     reset
   }
 })

@@ -21,16 +21,22 @@
       class="tag-strip flex h-full min-w-0 flex-1 items-center gap-1 overflow-x-auto px-2"
       @wheel="onWheel"
     >
-      <TagItem
-        v-for="tag in tags"
-        :key="tag.path"
-        :tag="tag"
-        :active="tag.path === route.path"
-        :menu-open="menuVisible && menuTag?.path === tag.path"
-        @select="openTag"
-        @close="closeTag"
-        @contextmenu="openMenu"
-      />
+      <template v-for="(tag, index) in tags" :key="tag.path">
+        <!-- 标签之间的竖线分隔（第一个标签前不画） -->
+        <span
+          v-if="index > 0"
+          class="h-4 w-px shrink-0 bg-(--el-border-color)"
+          aria-hidden="true"
+        />
+        <TagItem
+          :tag="tag"
+          :active="tag.path === route.path"
+          :menu-open="menuVisible && menuTag?.path === tag.path"
+          @select="openTag"
+          @close="closeTag"
+          @contextmenu="openMenu"
+        />
+      </template>
     </div>
 
     <button
@@ -64,9 +70,6 @@ import { buildTagContextMenu, type TagContextMenuKey } from './menu'
 import { TAG_SCROLL_STEP, useTagsScroll } from './useTagsScroll'
 
 defineOptions({ name: 'TagsViews' })
-
-/** 「重新加载」用的中转路由前缀，见 router/routes/coreRoutes.ts */
-const REDIRECT_PREFIX = '/redirect'
 
 /** 全屏目标元素在布局与 AppMain 上的 id */
 const BODY_ELEMENT_ID = 'app-main-column'
@@ -162,14 +165,14 @@ const closeTag = async (tag: TagView): Promise<void> => {
 }
 
 /**
- * 重新加载：先清掉该页缓存，再经 /redirect 中转一次，
- * 让目标组件真正重新挂载（而不是被 <KeepAlive> 复用旧实例）。
+ * 重新加载：切到目标标签后触发全局刷新（清 keep-alive 缓存 + 销毁重建内容区），
+ * 保证拿到的是新实例，而不是 <KeepAlive> 里的旧实例。
  */
 const reloadTag = async (tag: TagView): Promise<void> => {
-  tagsViewStore.delCachedView(tag)
-  await nextTick()
-  await router.replace(`${REDIRECT_PREFIX}${tag.fullPath}`)
-  tagsViewStore.addCachedView(tag)
+  if (tag.path !== route.path) {
+    await router.push(tag.fullPath)
+  }
+  tagsViewStore.refreshContent()
 }
 
 /** 批量关闭后当前页标签可能已被关掉，此时跳到右键选中的标签 */

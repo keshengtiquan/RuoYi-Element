@@ -6,9 +6,11 @@
       <PanelLeftClose v-if="!appStore.sidebarCollapsed" />
       <PanelLeftOpen v-else />
     </IconButton>
-    <IconButton :size="16">
-      <RotateCw />
-    </IconButton>
+    <ElTooltip content="刷新页面" placement="bottom" :show-after="120">
+      <IconButton :size="16" aria-label="刷新页面" @click="tagsViewStore.refreshContent()">
+        <RotateCw />
+      </IconButton>
+    </ElTooltip>
     <Breadcrumb />
 
     <div class="flex-1" />
@@ -27,11 +29,7 @@
         <Maximize v-else />
       </IconButton>
     </ElTooltip>
-    <ElTooltip content="系统设置" placement="bottom" :show-after="120">
-      <IconButton :size="16" aria-label="系统设置" @click="settingsVisible = true">
-        <SettingsIcon />
-      </IconButton>
-    </ElTooltip>
+
     <ElDropdown trigger="click" @command="handleCommand">
       <span
         class="flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm text-(--el-text-color-primary) outline-none transition-colors hover:bg-(--el-fill-color-light)"
@@ -63,6 +61,11 @@
         </ElDropdownMenu>
       </template>
     </ElDropdown>
+    <ElTooltip content="系统设置" placement="bottom" :show-after="120">
+      <IconButton :size="16" aria-label="系统设置" @click="settingsVisible = true">
+        <SettingsIcon />
+      </IconButton>
+    </ElTooltip>
     <SettingsPanel v-model:visible="settingsVisible" />
   </header>
 </template>
@@ -72,6 +75,7 @@ import { ChevronDown, PanelLeftClose, PanelLeftOpen } from '@lucide/vue'
 import { ElMessageBox } from 'element-plus'
 import { useAppStore } from '@/stores/modules/app'
 import { useUserStore } from '@/stores/modules/user'
+import { useTagsViewStore } from '@/stores/modules/tagsView'
 import {
   UserRound,
   LockKeyhole,
@@ -90,6 +94,7 @@ defineOptions({ name: 'Navbar' })
 const router = useRouter()
 const appStore = useAppStore()
 const userStore = useUserStore()
+const tagsViewStore = useTagsViewStore()
 
 /** 系统设置抽屉（标签页样式、布局等全局 UI 配置） */
 const settingsVisible = ref(false)
