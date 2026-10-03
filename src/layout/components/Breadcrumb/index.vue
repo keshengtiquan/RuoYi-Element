@@ -1,8 +1,9 @@
 <template>
-  <nav class="ml-2.5 max-lg:hidden!">
-    <ul class="flex items-center">
+  <!-- min-w-0：标题很长时面包屑可以被压缩，否则会把右侧按钮挤出可视区 -->
+  <nav class="ml-2.5 min-w-0 max-lg:hidden!" aria-label="面包屑">
+    <ul class="flex min-w-0 items-center">
       <!-- 非首页时固定前置首页入口，点击返回首页 -->
-      <li v-if="!isHome" class="box-border flex justify-center items-center text-sm">
+      <li v-if="!isHome" class="box-border flex shrink-0 items-center text-sm">
         <button
           type="button"
           class="flex cursor-pointer items-center text-(--el-text-color-secondary) transition-colors hover:text-(--el-text-color-primary)"
@@ -12,25 +13,33 @@
         >
           <AppIcon name="house" :size="14" />
         </button>
-        <div class="mx-1 text-sm not-italic text-(--el-text-color-secondary)" aria-hidden="true">
+        <div
+          class="mx-1 shrink-0 text-sm not-italic text-(--el-text-color-secondary)"
+          aria-hidden="true"
+        >
           /
         </div>
       </li>
       <li
-        class="box-border flex justify-center items-center text-sm"
         v-for="(item, index) in breadcrumbItems"
         :key="item.path"
+        class="box-border flex items-center text-sm"
+        :class="isLast(index) ? 'min-w-0' : 'shrink-0'"
       >
+        <!-- 只有最后一级（当前页）允许省略：前面的层级保持完整，符合面包屑的常规读法 -->
         <span
           :class="
-            isLast(index) ? 'text-(--el-text-color-primary)' : 'text-(--el-text-color-secondary)'
+            isLast(index)
+              ? 'truncate text-(--el-text-color-primary)'
+              : 'shrink-0 text-(--el-text-color-secondary)'
           "
+          :title="isLast(index) ? item.meta.title : undefined"
         >
           {{ item.meta.title }}
         </span>
         <div
           v-if="!isLast(index)"
-          class="mx-1 text-sm not-italic text-(--el-text-color-secondary)"
+          class="mx-1 shrink-0 text-sm not-italic text-(--el-text-color-secondary)"
           aria-hidden="true"
         >
           /

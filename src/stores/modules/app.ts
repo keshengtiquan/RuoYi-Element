@@ -11,6 +11,12 @@ export const useAppStore = defineStore(
     /** 侧边栏是否折叠 */
     const sidebarCollapsed = ref(false)
 
+    /**
+     * 双栏布局里「一级栏是否展开」：展开时一级图标下方显示文字、栏宽加大。
+     * 只影响双栏布局，由一级栏底部的切换按钮控制。
+     */
+    const railExpanded = ref(false)
+
     /** 当前布局名（layout/index.vue 据此选择布局组件） */
     const layout = ref<LayoutName>(DEFAULT_LAYOUT)
 
@@ -25,6 +31,11 @@ export const useAppStore = defineStore(
       sidebarCollapsed.value = !sidebarCollapsed.value
     }
 
+    /** 切换双栏布局一级栏的展开/收起 */
+    const toggleRail = () => {
+      railExpanded.value = !railExpanded.value
+    }
+
     /** 切换布局；名字需已在 @/layout/layouts 注册，否则会被回退到默认布局 */
     const setLayout = (name: LayoutName) => {
       layout.value = name
@@ -37,9 +48,11 @@ export const useAppStore = defineStore(
 
     return {
       sidebarCollapsed,
+      railExpanded,
       layout,
       tagStyle,
       toggleSidebar,
+      toggleRail,
       setLayout,
       setTagStyle
     }

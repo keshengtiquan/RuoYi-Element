@@ -1,7 +1,7 @@
 <template>
   <div v-if="!leaf">
     <ElTooltip
-      :disabled="!collapsed"
+      :disabled="!collapsed && !groupTitleOverflowing"
       :content="item.meta?.title"
       placement="right"
       :offset="10"
@@ -16,7 +16,10 @@
         @click="toggleGroup"
       >
         <AppIcon :name="item.meta?.icon" :size="18" />
-        <span :class="collapsed ? 'sr-only' : 'min-w-0 flex-1 truncate text-left'">
+        <span
+          ref="groupTitleRef"
+          :class="collapsed ? 'sr-only' : 'min-w-0 flex-1 truncate text-left'"
+        >
           {{ item.meta?.title }}
         </span>
         <ChevronDown
@@ -43,7 +46,7 @@
   <!-- 叶子菜单项：站内用 RouterLink，外链用 a 标签；折叠态用 tooltip 显示名称 -->
   <ElTooltip
     v-else
-    :disabled="!collapsed"
+    :disabled="!collapsed && !leafTitleOverflowing"
     :content="leaf.title"
     placement="right"
     :offset="10"
@@ -57,7 +60,9 @@
       :style="indentStyle"
     >
       <AppIcon :name="leaf.icon" :size="18" />
-      <span :class="collapsed ? 'sr-only' : 'min-w-0 truncate'">{{ leaf.title }}</span>
+      <span ref="leafTitleRef" :class="collapsed ? 'sr-only' : 'min-w-0 truncate'">
+        {{ leaf.title }}
+      </span>
     </RouterLink>
 
     <a
@@ -70,7 +75,9 @@
       :style="indentStyle"
     >
       <AppIcon :name="leaf.icon" :size="18" />
-      <span :class="collapsed ? 'sr-only' : 'min-w-0 truncate'">{{ leaf.title }}</span>
+      <span ref="leafTitleRef" :class="collapsed ? 'sr-only' : 'min-w-0 truncate'">
+        {{ leaf.title }}
+      </span>
     </a>
   </ElTooltip>
 </template>
@@ -88,6 +95,7 @@ import {
 } from '@/utils/route'
 import SidebarCollapse from './SidebarCollapse.vue'
 import { isGroupActive, isPathActive } from './menu'
+import { useTextOverflow } from './useTextOverflow'
 
 // 同名自引用实现递归渲染（<SidebarItem> 在模板中指向自身）
 defineOptions({ name: 'SidebarItem' })
@@ -150,6 +158,17 @@ const toggleGroup = () => {
   }
   expanded.value = !expanded.value
 }
+
+/**
+ * 标题被截断时才弹 tooltip（折叠态本来就没有文字，一律弹）。
+ * 分组与叶子各测各的元素，两个分支同时只会渲染一个。
+ */
+const groupTitleRef = ref<HTMLElement | null>(null)
+const leafTitleRef = ref<HTMLElement | null>(null)
+
+const overflowDeps = () => [props.item, props.basePath, collapsed.value, route.path]
+const { isOverflowing: groupTitleOverflowing } = useTextOverflow(groupTitleRef, overflowDeps)
+const { isOverflowing: leafTitleOverflowing } = useTextOverflow(leafTitleRef, overflowDeps)
 
 /** 子菜单缩进：折叠态只显示图标，不需要缩进 */
 const indentStyle = computed(() =>

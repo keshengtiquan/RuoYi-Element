@@ -1,5 +1,6 @@
 import type { Component } from 'vue'
 import DefaultLayout from './default.vue'
+import TwoColumnLayout from './twoColumn.vue'
 
 /**
  * 布局注册表。
@@ -15,7 +16,8 @@ import DefaultLayout from './default.vue'
  * 都已收敛到函数体内，不存在 TDZ 问题，见 permission.ts 的注释）。
  */
 export const layoutComponents: Record<string, Component> = {
-  default: DefaultLayout
+  default: DefaultLayout,
+  twoColumn: TwoColumnLayout
 }
 
 /** 布局元信息，数组顺序即设置面板中的展示顺序 */
@@ -33,11 +35,16 @@ export const layoutOptions: LayoutOption[] = [
     name: 'default',
     label: '经典布局',
     description: '左侧菜单 + 顶部导航栏'
+  },
+  {
+    name: 'twoColumn',
+    label: '双栏布局',
+    description: '左侧图标栏 + 二级菜单栏'
   }
 ]
 
-/** 布局名联合类型（当前只实现了 default，后续新增布局时在此补充） */
-export type LayoutName = 'default'
+/** 布局名联合类型（新增布局时在此补充，与 layoutComponents 的 key 一致） */
+export type LayoutName = 'default' | 'twoColumn'
 
 /** 默认布局名 */
 export const DEFAULT_LAYOUT: LayoutName = 'default'

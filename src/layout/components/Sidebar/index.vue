@@ -13,7 +13,7 @@
         v-show="!appStore.sidebarCollapsed"
         class="truncate text-[15px] font-semibold whitespace-nowrap"
       >
-        RuoYi Element
+        {{ APP_TITLE }}
       </span>
     </RouterLink>
 
@@ -31,22 +31,17 @@
 </template>
 
 <script setup lang="ts">
-import type { RouteRecordRaw } from 'vue-router'
+import { APP_TITLE } from '@/constants/app'
 import { useAppStore } from '@/stores/modules/app'
-import { usePermissionStore } from '@/stores/modules/permission'
 import SidebarItem from './SidebarItem.vue'
+import { useMenuRoutes } from './useMenuRoutes'
 
 defineOptions({ name: 'Sidebar' })
 
-const router = useRouter()
 const appStore = useAppStore()
-const permissionStore = usePermissionStore()
 
-const menuRoutes = computed<RouteRecordRaw[]>(() => {
-  const staticRoutes = router.options.routes.filter((item) => !item.meta?.hidden)
-  const dynamicRoutes = permissionStore.routes.filter((item) => !item.meta?.hidden)
-  return [...staticRoutes, ...dynamicRoutes]
-})
+/** 菜单数据源（静态 + 动态路由）统一收口在 useMenuRoutes，双栏布局的图标栏也用它 */
+const menuRoutes = useMenuRoutes()
 </script>
 
 <style scoped></style>
