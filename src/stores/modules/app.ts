@@ -27,6 +27,24 @@ export const useAppStore = defineStore(
      */
     const tagStyle = ref<TagsViewStyle>(DEFAULT_TAGS_VIEW_STYLE)
 
+    /**
+     * 系统设置抽屉是否展开。
+     *
+     * 放在 store 里而不是 NavbarActions 的组件内 ref：抽屉挂在 NavbarActions 内部，
+     * 而切换布局会把 `layout/index.vue` 里的 `<component :is>` 整个换掉，
+     * NavbarActions 连同抽屉一起卸载重建 —— 组件内的 ref 会跟着丢，表现为「切完布局抽屉自动关了」。
+     * 状态提到 store 后，新布局挂载时读到的仍是 true，抽屉会原地重新出现（不关）。
+     */
+    const settingsVisible = ref(false)
+
+    const openSettings = () => {
+      settingsVisible.value = true
+    }
+
+    const closeSettings = () => {
+      settingsVisible.value = false
+    }
+
     const toggleSidebar = () => {
       sidebarCollapsed.value = !sidebarCollapsed.value
     }
@@ -51,16 +69,21 @@ export const useAppStore = defineStore(
       railExpanded,
       layout,
       tagStyle,
+      settingsVisible,
       toggleSidebar,
       toggleRail,
       setLayout,
-      setTagStyle
+      setTagStyle,
+      openSettings,
+      closeSettings
     }
   },
   {
     persist: {
       key: 'app',
-      storage: localStorage
+      storage: localStorage,
+      // 只持久化「用户偏好」；settingsVisible 这类瞬时状态不写进本地存储，否则刷新后抽屉会自己弹出来
+      pick: ['sidebarCollapsed', 'railExpanded', 'layout', 'tagStyle']
     }
   }
 )

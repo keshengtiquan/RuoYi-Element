@@ -25,10 +25,10 @@ export const layoutComponents: Record<string, Component> = {
 /** 布局元信息，数组顺序即设置面板中的展示顺序 */
 export interface LayoutOption {
   /** 布局名，与 layoutComponents 的 key 一致 */
-  name: string
-  /** 面板上的显示名 */
+  name: LayoutName
+  /** 面板上的显示名（设置面板用作缩略图的 aria-label） */
   label: string
-  /** 一句话说明，帮助用户选择 */
+  /** 一句话说明，设置面板用作缩略图的悬浮提示 */
   description: string
 }
 

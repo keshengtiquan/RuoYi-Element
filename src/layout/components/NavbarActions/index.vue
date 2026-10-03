@@ -50,11 +50,11 @@
   </ElDropdown>
 
   <ElTooltip content="系统设置" placement="bottom" :show-after="120">
-    <IconButton :size="16" aria-label="系统设置" @click="settingsVisible = true">
+    <IconButton :size="16" aria-label="系统设置" @click="appStore.openSettings()">
       <SettingsIcon />
     </IconButton>
   </ElTooltip>
-  <SettingsPanel v-model:visible="settingsVisible" />
+  <SettingsPanel :visible="appStore.settingsVisible" @update:visible="appStore.closeSettings()" />
 </template>
 
 <script setup lang="ts">
@@ -69,6 +69,7 @@ import {
 } from '@lucide/vue'
 import { ElMessageBox } from 'element-plus'
 import IconButton from '@/components/IconButon/index.vue'
+import { useAppStore } from '@/stores/modules/app'
 import { useUserStore } from '@/stores/modules/user'
 import SettingsPanel from '../Settings/index.vue'
 import ThemeToggle from '../ThemeToggle/index.vue'
@@ -80,10 +81,8 @@ import ThemeToggle from '../ThemeToggle/index.vue'
 defineOptions({ name: 'NavbarActions' })
 
 const router = useRouter()
+const appStore = useAppStore()
 const userStore = useUserStore()
-
-/** 系统设置抽屉（标签页样式、布局等全局 UI 配置） */
-const settingsVisible = ref(false)
 
 /**
  * 全屏切换（不传 target，默认作用于 document.documentElement）。
