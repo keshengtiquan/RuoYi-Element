@@ -18,6 +18,8 @@
 <script setup lang="ts">
 import AppMain from './components/AppMain/index.vue'
 import Navbar from './components/Navbar/index.vue'
+import { useAppStore } from '@/stores/modules/app'
+import { resolveMenuLeaf } from '@/utils/route'
 import { isGroupActive } from './components/Sidebar/menu'
 import { useMenuRoutes } from './components/Sidebar/useMenuRoutes'
 import SidebarRail from './components/SidebarRail/index.vue'
@@ -27,6 +29,7 @@ import TagsViews from './components/TagsViews/index.vue'
 defineOptions({ name: 'TwoColumnLayout' })
 
 const route = useRoute()
+const appStore = useAppStore()
 
 const menuRoutes = useMenuRoutes()
 
@@ -62,8 +65,20 @@ watch(
   }
 )
 
-/** 点击一级菜单：只切换菜单栏，跳转交给叶子项自己 */
+/**
+ * 点击一级菜单：切换菜单栏内容，跳转交给叶子项自己。
+ *
+ * 菜单栏被折叠（顶栏左侧按钮收起、宽度为 0）时，点一级菜单要顺带把菜单栏展开回来，
+ * 否则点了「没反应」；叶子一级菜单没有子菜单可看，就不用动折叠状态。
+ */
 const switchTop = (path: string): void => {
   overridePath.value = path
+
+  const entry = menuRoutes.value.find((item) => item.path === path)
+  const isLeafTop = !!entry && !!resolveMenuLeaf(entry, path)
+
+  if (!isLeafTop && appStore.sidebarCollapsed) {
+    appStore.toggleSidebar()
+  }
 }
 </script>
