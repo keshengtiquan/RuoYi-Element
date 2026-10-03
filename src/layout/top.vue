@@ -2,7 +2,7 @@
   <div class="flex h-screen w-full flex-col overflow-hidden bg-(--el-bg-color-page)">
     <!-- 顶栏：Logo + 横向菜单 + 右侧操作 -->
     <header
-      class="relative z-30 flex h-14 shrink-0 items-center gap-1 border-b border-(--el-border-color-lighter) bg-(--el-bg-color) px-3"
+      class="flex h-14 shrink-0 items-center gap-1 border-b border-(--el-border-color-lighter) bg-(--el-bg-color) px-3"
     >
       <RouterLink to="/" class="flex shrink-0 items-center gap-2.5 pr-1 no-underline">
         <img class="size-6" src="@/assets/vite.svg" alt="logo" />
