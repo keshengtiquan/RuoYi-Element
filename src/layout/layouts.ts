@@ -1,5 +1,6 @@
 import type { Component } from 'vue'
 import DefaultLayout from './default.vue'
+import TopLayout from './top.vue'
 import TwoColumnLayout from './twoColumn.vue'
 
 /**
@@ -17,7 +18,8 @@ import TwoColumnLayout from './twoColumn.vue'
  */
 export const layoutComponents: Record<string, Component> = {
   default: DefaultLayout,
-  twoColumn: TwoColumnLayout
+  twoColumn: TwoColumnLayout,
+  top: TopLayout
 }
 
 /** 布局元信息，数组顺序即设置面板中的展示顺序 */
@@ -40,11 +42,16 @@ export const layoutOptions: LayoutOption[] = [
     name: 'twoColumn',
     label: '双栏布局',
     description: '左侧图标栏 + 二级菜单栏'
+  },
+  {
+    name: 'top',
+    label: '顶栏布局',
+    description: '菜单横向排在顶栏'
   }
 ]
 
 /** 布局名联合类型（新增布局时在此补充，与 layoutComponents 的 key 一致） */
-export type LayoutName = 'default' | 'twoColumn'
+export type LayoutName = 'default' | 'twoColumn' | 'top'
 
 /** 默认布局名 */
 export const DEFAULT_LAYOUT: LayoutName = 'default'
