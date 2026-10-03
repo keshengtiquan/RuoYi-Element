@@ -5,6 +5,27 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ruoyi-element</title>
+    <script>
+      /*
+       * 首屏防闪白：在应用（和样式）加载前就把主题类挂到 <html> 上，
+       * 否则暗色用户每次刷新都会先看到一帧亮色。
+       * storageKey 必须与 useColorMode 的默认存储键一致（vueuse-color-scheme）；
+       * 值为 'auto' 或没有值时跟随系统 prefers-color-scheme。
+       */
+      ;(() => {
+        try {
+          const stored = localStorage.getItem('vueuse-color-scheme')
+          const followSystem = !stored || stored === 'auto'
+          const dark =
+            stored === 'dark' ||
+            (followSystem && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          document.documentElement.classList.toggle('dark', dark)
+          window.__THEME_PREAPPLIED__ = true
+        } catch {
+          /* localStorage 不可用时忽略，交给 useColorMode 处理 */
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="app"></div>

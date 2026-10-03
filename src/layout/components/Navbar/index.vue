@@ -30,6 +30,8 @@
       </IconButton>
     </ElTooltip>
 
+    <ThemeToggle />
+
     <ElDropdown trigger="click" @command="handleCommand">
       <span
         class="flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm text-(--el-text-color-primary) outline-none transition-colors hover:bg-(--el-fill-color-light)"
@@ -88,6 +90,7 @@ import {
 import IconButton from '@/components/IconButon/index.vue'
 import Breadcrumb from '../Breadcrumb/index.vue'
 import SettingsPanel from '../Settings/index.vue'
+import ThemeToggle from '../ThemeToggle/index.vue'
 
 defineOptions({ name: 'Navbar' })
 
