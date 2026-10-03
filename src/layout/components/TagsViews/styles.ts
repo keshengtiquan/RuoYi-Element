@@ -1,14 +1,14 @@
 /**
  * 标签页（TagsViews）的激活样式。
  *
+ * - tag：界面上叫「默认」——淡蓝底圆角块（默认值）
  * - line：指示线——蓝字 + 底部指示条
- * - tag：标签——淡蓝底圆角块
  *
  * 这里只放「类型 + 元信息 + class 映射」，组件内不写死具体样式；
  * 设置抽屉（layout/components/Settings）改 appStore.tagStyle 就能整条标签栏换样式。
  */
 
-/** 标签激活样式名 */
+/** 标签激活样式名（内部键，界面文案见 tagsViewStyleOptions） */
 export type TagsViewStyle = 'line' | 'tag'
 
 /** 默认样式 */
@@ -19,10 +19,13 @@ export const DEFAULT_TAGS_VIEW_STYLE: TagsViewStyle = 'tag'
  *
  * ⚠️ 这里只提供「可选项」，不会切换样式；真正生效的是 `appStore.tagStyle`，
  * 而它是持久化的：浏览器里已有值时以持久化值为准，改 DEFAULT_TAGS_VIEW_STYLE 不会生效。
+ *
+ * ⚠️ value 是内部键，尽量别改名：`tagStyle` 会存进 localStorage，
+ * 改了键等于让老用户的存储值失效（虽然会被 resolveTagsViewStyle 兜回默认样式，但没必要）。
  */
 export const tagsViewStyleOptions: Array<{ value: TagsViewStyle; label: string }> = [
-  { value: 'line', label: '指示线' },
-  { value: 'tag', label: '标签' }
+  { value: 'tag', label: '默认' },
+  { value: 'line', label: '指示线' }
 ]
 
 /**

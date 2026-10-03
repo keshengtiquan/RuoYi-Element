@@ -179,10 +179,4 @@ const groupActiveClass =
   'text-(--el-color-primary) hover:bg-(--sidebar-hover-bg-color) hover:text-(--el-color-primary)'
 </script>
 
-<style scoped>
-/* 键盘可达性：Element 变量取主色，避免在 Tailwind 里写 ring/outline 的工具类组合 */
-.ry-item:focus-visible {
-  outline: 2px solid var(--el-color-primary);
-  outline-offset: 2px;
-}
-</style>
+<style scoped></style>

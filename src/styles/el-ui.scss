@@ -38,7 +38,7 @@ body .el-input-number:not(.is-disabled) .el-input .el-input__wrapper.is-focus {
   border: none !important;
 
   .el-dropdown-menu__item {
-    padding: 5px 8px !important;
+    padding: 5px 5px !important;
     border-radius: 6px !important;
 
     &:hover:not(.is-disabled) {
@@ -50,5 +50,71 @@ body .el-input-number:not(.is-disabled) .el-input .el-input__wrapper.is-focus {
       color: var(--el-text-color-primary) !important;
       background-color: var(--el-fill-color) !important;
     }
+  }
+}
+
+// 隐藏 select、dropdown 的三角
+.el-select__popper,
+.el-dropdown__popper {
+  margin-top: -6px !important;
+
+  // .el-popper__arrow {
+  //   display: none;
+  // }
+}
+
+// 修改 el-select 样式
+.el-select__popper:not(.el-tree-select__popper) {
+  .el-select-dropdown__list {
+    padding: 5px !important;
+
+    .el-select-dropdown__item {
+      height: 32px !important;
+      line-height: 32px !important;
+      border-radius: 6px !important;
+
+      &.is-selected {
+        color: var(--el-color-primary) !important;
+        font-weight: 400 !important;
+        background-color: var(--el-color-primary-light-8) !important;
+      }
+
+      &:hover {
+        color: var(--el-color-primary) !important;
+        background-color: var(--el-color-primary-light-8) !important;
+      }
+    }
+
+    .el-select-dropdown__item:hover ~ .is-selected,
+    .el-select-dropdown__item.is-selected:has(~ .el-select-dropdown__item:hover) {
+      background-color: transparent !important;
+    }
+  }
+}
+
+// 修改 el-tree-select 样式
+.el-tree-select__popper {
+  .el-select-dropdown__list {
+    padding: 5px !important;
+
+    .el-tree-node {
+      .el-tree-node__content {
+        height: 36px !important;
+        border-radius: 6px !important;
+
+        &:hover {
+          background-color: var(--el-fill-color) !important;
+        }
+      }
+    }
+  }
+}
+
+.el-drawer {
+  .el-drawer__header {
+    margin-bottom: 20px !important;
+  }
+  .el-drawer__body {
+    padding: 0 var(--el-drawer-padding-primary) !important;
   }
 }
