@@ -56,7 +56,8 @@ module.exports = {
           'else',
           'for',
           'while',
-          'reference'
+          'reference',
+          'custom-variant' // Tailwind v4 指令（styles/tailwind.css 用它改 dark 变体）
         ]
       }
     ],
@@ -74,7 +75,8 @@ module.exports = {
           'else',
           'for',
           'while',
-          'reference'
+          'reference',
+          'custom-variant' // Tailwind v4 指令（styles/tailwind.css 用它改 dark 变体）
         ]
       }
     ]

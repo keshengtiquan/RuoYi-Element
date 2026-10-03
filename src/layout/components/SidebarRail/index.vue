@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="flex h-full shrink-0 flex-col overflow-hidden border-r border-white/10 bg-(--sidebar-bg-color) transition-[width] duration-300 ease-in-out"
+    class="flex h-full shrink-0 flex-col overflow-hidden border-r border-(--sidebar-border-color) bg-(--sidebar-bg-color) transition-[width] duration-300 ease-in-out"
     :class="appStore.railExpanded ? 'w-22' : 'w-16'"
   >
     <!-- 内层固定宽度：展开/收起动画时文字不重排 -->
@@ -38,7 +38,7 @@
       >
         <button
           type="button"
-          class="flex h-12 w-full shrink-0 cursor-pointer items-center justify-center border-t border-white/10 text-(--sidebar-text-color) transition-colors hover:bg-(--sidebar-hover-bg-color) hover:text-(--sidebar-hover-text-color)"
+          class="flex h-12 w-full shrink-0 cursor-pointer items-center justify-center border-t border-(--sidebar-border-color) text-(--sidebar-text-color) transition-colors hover:bg-(--sidebar-hover-bg-color) hover:text-(--sidebar-hover-text-color)"
           :aria-label="appStore.railExpanded ? '收起一级菜单' : '展开一级菜单'"
           @click="appStore.toggleRail()"
         >

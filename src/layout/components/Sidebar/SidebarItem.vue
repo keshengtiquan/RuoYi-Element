@@ -191,11 +191,11 @@ const idleClass =
   'text-(--sidebar-text-color) hover:bg-(--sidebar-hover-bg-color) hover:text-(--sidebar-hover-text-color)'
 
 /** 选中：主色底 + 白字，底色与文字色都来自 Element 变量 */
-const activeClass = 'bg-(--el-color-primary) text-(--el-color-white)'
+const activeClass = 'bg-(--sidebar-active-bg-color) text-(--sidebar-active-text-color)'
 
 /** 分组含选中项：仅文字与图标染主色，不整块铺底 */
 const groupActiveClass =
-  'text-(--el-color-primary) hover:bg-(--sidebar-hover-bg-color) hover:text-(--el-color-primary)'
+  'text-(--sidebar-group-active-color) hover:bg-(--sidebar-hover-bg-color) hover:text-(--sidebar-group-active-color)'
 </script>
 
 <style scoped></style>

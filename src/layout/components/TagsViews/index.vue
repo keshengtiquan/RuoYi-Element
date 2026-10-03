@@ -1,5 +1,10 @@
 <template>
+  <!--
+    v-if 接设置抽屉「页签配置 → 开启多页签栏」：关掉时整条 bar 不渲染。
+    注意组件仍然挂载（只是不出 DOM），标签登记/缓存登记照常跑，重新打开时标签都还在。
+  -->
   <div
+    v-if="appStore.tagsViewVisible"
     class="flex h-10 shrink-0 items-center border-b border-(--el-border-color-lighter) bg-(--el-bg-color)"
   >
     <!--
@@ -63,6 +68,7 @@
 <script setup lang="ts">
 import { ChevronLeft, ChevronRight } from '@lucide/vue'
 import { HOME_ROUTE_PATH } from '@/constants/app'
+import { useAppStore } from '@/stores/modules/app'
 import { useTagsViewStore, type TagView } from '@/stores/modules/tagsView'
 import TagContextMenu from './TagContextMenu.vue'
 import TagItem from './TagItem.vue'
@@ -77,6 +83,7 @@ const CONTENT_ELEMENT_ID = 'app-main'
 
 const route = useRoute()
 const router = useRouter()
+const appStore = useAppStore()
 const tagsViewStore = useTagsViewStore()
 
 const tags = computed(() => tagsViewStore.visitedViews)

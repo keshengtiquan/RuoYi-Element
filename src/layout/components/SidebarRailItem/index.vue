@@ -75,7 +75,7 @@ const emit = defineEmits<{
 }>()
 
 /** 选中：主色底 + 白字（与经典布局的菜单项一致） */
-const activeClass = 'bg-(--el-color-primary) text-(--el-color-white)'
+const activeClass = 'bg-(--sidebar-active-bg-color) text-(--sidebar-active-text-color)'
 
 /** 未选中：次级文字色 + 悬停浅色底 */
 const idleClass =

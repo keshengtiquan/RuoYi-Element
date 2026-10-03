@@ -8,9 +8,49 @@
  */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+ * 侧栏配色变量（经典布局的侧边栏、双栏布局的两栏都吃这一组）。
+ *
+ * 默认是「暗色侧栏」；另外两种风格由 <html> 上的 sidebar-light / sidebar-primary 类切换
+ * （类由 utils/theme.ts 的 applySidebarStyle 挂，设置在「系统设置 → 侧栏风格」）。
+ * 设置面板里那三张缩略图的配色见 Settings/SidebarPreview.vue，改这里记得同步。
+ */
 :root {
   --sidebar-bg-color: #141414;
   --sidebar-text-color: #fff;
   --sidebar-hover-bg-color: #292a2e;
   --sidebar-hover-text-color: #fff;
+  --sidebar-border-color: rgb(255 255 255 / 10%);
+  --sidebar-active-bg-color: var(--el-color-primary);
+  --sidebar-active-text-color: var(--el-color-white);
+
+  /* 「目录含选中项」的文字色（只染文字不铺底） */
+  --sidebar-group-active-color: #fff;
+}
+
+/* 亮色侧栏：跟着页面底色走（暗色主题下就是暗色面板），分界线改用 Element 的边框色 */
+html.sidebar-light {
+  --sidebar-bg-color: var(--el-bg-color);
+  --sidebar-text-color: var(--el-text-color-primary);
+  --sidebar-hover-bg-color: var(--el-fill-color-light);
+  --sidebar-hover-text-color: var(--el-text-color-primary);
+  --sidebar-border-color: var(--el-border-color-lighter);
+  --sidebar-active-bg-color: var(--el-color-primary-light-9);
+  --sidebar-active-text-color: var(--el-color-primary);
+  --sidebar-group-active-color: var(--el-color-primary);
+}
+
+/*
+ * 主色侧栏：底色就是主题主色，所以「选中」不能再铺主色（会看不见），
+ * 改成压深一档的底色 + 白字；未选中文字用 82% 白，「目录含选中项」用纯白来区分。
+ */
+html.sidebar-primary {
+  --sidebar-bg-color: var(--el-color-primary);
+  --sidebar-text-color: rgb(255 255 255 / 82%);
+  --sidebar-hover-bg-color: rgb(255 255 255 / 14%);
+  --sidebar-hover-text-color: #fff;
+  --sidebar-border-color: rgb(255 255 255 / 20%);
+  --sidebar-active-bg-color: color-mix(in srgb, var(--el-color-primary) 78%, #000);
+  --sidebar-active-text-color: #fff;
+  --sidebar-group-active-color: #fff;
 }

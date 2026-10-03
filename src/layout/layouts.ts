@@ -35,7 +35,7 @@ export interface LayoutOption {
 export const layoutOptions: LayoutOption[] = [
   {
     name: 'default',
-    label: '经典布局',
+    label: '默认布局',
     description: '左侧菜单 + 顶部导航栏'
   },
   {
@@ -45,7 +45,7 @@ export const layoutOptions: LayoutOption[] = [
   },
   {
     name: 'top',
-    label: '顶栏布局',
+    label: '顶部布局',
     description: '菜单横向排在顶栏'
   }
 ]

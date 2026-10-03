@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="flex h-full shrink-0 flex-col overflow-hidden bg-(--sidebar-bg-color) transition-[width] duration-300 ease-in-out"
+    class="flex h-full shrink-0 flex-col overflow-hidden border-r border-(--sidebar-border-color) bg-(--sidebar-bg-color) transition-[width] duration-300 ease-in-out"
     :class="appStore.sidebarCollapsed ? 'w-16' : 'w-52.5'"
   >
     <RouterLink

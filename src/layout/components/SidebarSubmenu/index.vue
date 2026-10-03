@@ -1,7 +1,7 @@
 <template>
   <aside
     class="flex h-full shrink-0 flex-col overflow-hidden bg-(--sidebar-bg-color) transition-[width] duration-300 ease-in-out"
-    :class="hidden ? 'w-0' : 'w-52.5'"
+    :class="hidden ? 'w-0' : 'w-52.5 border-r border-(--sidebar-border-color)'"
   >
     <!-- 内层固定宽度：收起动画时文字不重排 -->
     <div class="flex h-full w-52.5 flex-col">

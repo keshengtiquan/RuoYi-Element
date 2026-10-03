@@ -11,36 +11,25 @@
 <script setup lang="ts">
 import IconButton from '@/components/IconButon/index.vue'
 import AppIcon from '@/components/AppIcon/index.vue'
+import { DARK_CLASS, useThemeMode } from './useThemeMode'
 
 defineOptions({ name: 'ThemeToggle' })
 
 /** 圆形揭示动画时长（ms） */
 const REVEAL_DURATION = 420
 
-/** 暗色主题挂在 <html> 上的类名（Element Plus 暗色变量按 .dark 生效） */
-const DARK_CLASS = 'dark'
-
 /**
- * 颜色模式：跟随系统（auto）→ 用户点过之后就按用户选的来，并持久化到 localStorage。
- * attribute: 'class' + modes 把 dark/light 映射成 <html> 上的 class（Element Plus 的暗色变量依赖它）。
- * mode 取到的是**解析后**的值，永远是 'dark' | 'light'，不会出现 'auto'。
+ * 主题模式：亮色 / 暗黑 / 跟随系统（偏好存在 vueuse 的 `vueuse-color-scheme` 里，设置抽屉也能改）。
+ * `isDark` 是**解析后**的结果，所以用户没手动选过（auto）时，图标也会跟着系统偏好走。
  */
-const mode = useColorMode({
-  attribute: 'class',
-  modes: {
-    dark: DARK_CLASS,
-    light: ''
-  }
-})
-
-const isDark = computed(() => mode.value === 'dark')
+const { isDark, setMode } = useThemeMode()
 
 /** 用户是否在系统里关掉了动画（无障碍） */
 const prefersReducedMotion = (): boolean =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 /**
- * 切换暗黑模式。
+ * 切换暗黑模式（点一下 = 明确选择亮色 / 暗黑，不再跟随系统）。
  *
  * 支持 View Transitions API 时用「圆形揭示」做动画，圆心就是点击的按钮：
  * - 切到暗色：新视图（暗）的圆从 0 扩散到覆盖全屏 —— 从按钮那里扩散变黑；
@@ -53,7 +42,7 @@ const handleToggle = (event: MouseEvent) => {
   const next = !isDark.value
 
   const applyMode = (): void => {
-    mode.value = next ? 'dark' : 'light'
+    setMode(next ? 'dark' : 'light')
     /**
      * 同步把 class 落到 <html> 上。
      * useColorMode 内部是 `watch(state, onChanged, { flush: 'post' })`，
