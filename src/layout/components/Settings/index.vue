@@ -160,12 +160,24 @@
           </div>
         </div>
       </div>
+      <div class="h-px bg-(--el-border-color-lighter)" />
+
+      <!-- 配置管理：复制当前配置 / 恢复默认配置（出厂值见 src/config.ts） -->
+      <div class="flex gap-2 py-2.5">
+        <ElButton class="flex-1" aria-label="复制当前配置" @click="copySettings">
+          复制当前配置
+        </ElButton>
+        <ElButton class="flex-1" aria-label="恢复默认配置" @click="restoreSettings">
+          恢复默认配置
+        </ElButton>
+      </div>
     </div>
   </ElDrawer>
 </template>
 
 <script setup lang="ts">
 import { Check } from '@lucide/vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { layoutOptions, type LayoutName } from '@/layout/layouts'
 import { useAppStore } from '@/stores/modules/app'
 import { SIDEBAR_STYLE_OPTIONS, THEME_COLOR_PRESETS, type SidebarStyle } from '@/utils/theme'
@@ -175,6 +187,7 @@ import { THEME_MODE_OPTIONS, useThemeMode, type ThemeMode } from '../ThemeToggle
 import LayoutPreview from './LayoutPreview.vue'
 import PreviewCard from './PreviewCard.vue'
 import SidebarPreview from './SidebarPreview.vue'
+import { useAppSettings } from './useAppSettings'
 
 defineOptions({ name: 'SettingsPanel' })
 
@@ -251,6 +264,39 @@ const setCustomColor = (value: string | null): void => {
 
 /** 当前主题色不在预设里 → 选中标记落在自定义色块上 */
 const isCustomColor = computed(() => !THEME_COLOR_PRESETS.includes(appStore.themeColor))
+
+// ------------------------------ 配置管理（复制 / 恢复默认） ------------------------------
+const { currentSettings, restoreDefaults } = useAppSettings()
+
+/**
+ * 复制当前配置：复制出来的是与 `src/config.ts` 的 DEFAULT_SETTINGS 同结构的 JSON，
+ * 可以直接粘回 config.ts 当默认值，或者存档发给别人。
+ */
+const { copy, isSupported: clipboardSupported } = useClipboard({ legacy: true })
+
+const copySettings = async (): Promise<void> => {
+  if (!clipboardSupported.value) {
+    ElMessage.warning('当前环境不支持复制，请手动复制')
+    return
+  }
+  await copy(JSON.stringify(currentSettings.value, null, 2))
+  ElMessage.success('当前配置已复制')
+}
+
+/** 恢复默认配置：按 src/config.ts 的出厂值逐项重置（不可撤销，先确认一次） */
+const restoreSettings = async (): Promise<void> => {
+  try {
+    await ElMessageBox.confirm('确定恢复默认配置吗？当前设置会被重置为出厂值。', '提示', {
+      confirmButtonText: '恢复默认',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+  } catch {
+    return // 用户取消
+  }
+  restoreDefaults()
+  ElMessage.success('已恢复默认配置')
+}
 
 const closeDrawer = (value: boolean): void => {
   emit('update:visible', value)

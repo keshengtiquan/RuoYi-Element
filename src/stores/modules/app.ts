@@ -1,3 +1,4 @@
+import { DEFAULT_SETTINGS } from '@/constants/config'
 import { DEFAULT_TAGS_VIEW_STYLE, type TagsViewStyle } from '@/layout/components/TagsViews/styles'
 import {
   DEFAULT_ROUTE_TRANSITION,
@@ -42,14 +43,14 @@ export const useAppStore = defineStore(
      * 关掉只是不渲染 TagsViews 的那一条 bar：组件仍然挂载，标签照常登记，
      * 所以重新打开时之前的标签都还在。三种布局共用这一份开关。
      */
-    const tagsViewVisible = ref(true)
+    const tagsViewVisible = ref(DEFAULT_SETTINGS.tagsViewVisible)
 
     /**
      * 是否缓存页面（设置抽屉「页签配置 → 页面切换缓存」）。
      * 关掉后 AppMain 的 <KeepAlive> 不拿到 include → 切换页面时组件重新挂载（不保状态）。
      * 标签本身照常记录，重新打开缓存时按当前标签重新进缓存。
      */
-    const pageCacheEnabled = ref(true)
+    const pageCacheEnabled = ref(DEFAULT_SETTINGS.pageCacheEnabled)
 
     /**
      * 系统设置抽屉是否展开。

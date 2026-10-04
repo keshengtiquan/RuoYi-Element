@@ -1,3 +1,5 @@
+import { DEFAULT_SETTINGS } from '@/constants/config'
+
 /**
  * 主题模式（亮色 / 暗黑 / 跟随系统）。
  *
@@ -26,6 +28,8 @@ export const THEME_MODE_OPTIONS: Array<{ value: ThemeMode; label: string }> = [
 
 export function useThemeMode() {
   const mode = useColorMode({
+    // 出厂值见 src/config.ts（'auto' = 跟随系统）
+    initialValue: DEFAULT_SETTINGS.themeMode,
     attribute: 'class',
     modes: {
       dark: DARK_CLASS,

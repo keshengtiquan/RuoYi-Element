@@ -1,3 +1,5 @@
+import { DEFAULT_SETTINGS } from '@/constants/config'
+
 /**
  * 标签页（TagsViews）的激活样式。
  *
@@ -11,8 +13,8 @@
 /** 标签激活样式名（内部键，界面文案见 tagsViewStyleOptions） */
 export type TagsViewStyle = 'line' | 'tag'
 
-/** 默认样式 */
-export const DEFAULT_TAGS_VIEW_STYLE: TagsViewStyle = 'tag'
+/** 默认样式（出厂值见 src/config.ts） */
+export const DEFAULT_TAGS_VIEW_STYLE: TagsViewStyle = DEFAULT_SETTINGS.tagStyle
 
 /**
  * 设置面板用的样式选项（数组顺序即展示顺序）。

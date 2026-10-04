@@ -1,3 +1,5 @@
+import { DEFAULT_SETTINGS } from '@/constants/config'
+
 /**
  * 路由切换动画。
  *
@@ -17,8 +19,8 @@
 /** 路由切换动画名（= animation.scss 里的过渡类名前缀） */
 export type RouteTransitionName = 'slide-right' | 'slide-left' | 'slide-up' | 'slide-down'
 
-/** 默认动画（与改造前一致） */
-export const DEFAULT_ROUTE_TRANSITION: RouteTransitionName = 'slide-right'
+/** 默认动画（出厂值见 src/config.ts） */
+export const DEFAULT_ROUTE_TRANSITION: RouteTransitionName = DEFAULT_SETTINGS.routeTransition
 
 /** 设置面板里的动画选项（数组顺序即展示顺序） */
 export const ROUTE_TRANSITION_OPTIONS: Array<{ value: RouteTransitionName; label: string }> = [

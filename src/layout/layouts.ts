@@ -1,4 +1,5 @@
 import type { Component } from 'vue'
+import { DEFAULT_SETTINGS } from '@/constants/config'
 import DefaultLayout from './default.vue'
 import TopLayout from './top.vue'
 import TwoColumnLayout from './twoColumn.vue'
@@ -53,8 +54,8 @@ export const layoutOptions: LayoutOption[] = [
 /** 布局名联合类型（新增布局时在此补充，与 layoutComponents 的 key 一致） */
 export type LayoutName = 'default' | 'twoColumn' | 'top'
 
-/** 默认布局名 */
-export const DEFAULT_LAYOUT: LayoutName = 'default'
+/** 默认布局名（出厂值见 src/config.ts） */
+export const DEFAULT_LAYOUT: LayoutName = DEFAULT_SETTINGS.layout
 
 /**
  * 解析布局组件。

@@ -8,6 +8,8 @@
  * 主题切换交给 CSS 命中，不用再监听颜色模式重算一遍。
  */
 
+import { DEFAULT_SETTINGS } from '@/constants/config'
+
 /** 预设主题色（顺序即设置面板里的顺序） */
 export const THEME_COLOR_PRESETS: readonly string[] = [
   '#3054ec',
@@ -19,8 +21,8 @@ export const THEME_COLOR_PRESETS: readonly string[] = [
   '#5f80c7'
 ]
 
-/** 默认主题色（预设里的第一个） */
-export const DEFAULT_THEME_COLOR = THEME_COLOR_PRESETS[0]!
+/** 默认主题色（出厂值见 src/config.ts；改默认色记得也改那边的 themeColor） */
+export const DEFAULT_THEME_COLOR: string = DEFAULT_SETTINGS.themeColor
 
 /** 混色底：浅色往白里混，暗色往 EP 暗色底色（`--el-bg-color` = #141414）里混 */
 const LIGHT_MIX_BASE = '#ffffff'
@@ -35,8 +37,8 @@ const STYLE_ELEMENT_ID = 'app-theme-color'
 /** 侧栏风格：暗色（默认）/ 亮色 / 主色 */
 export type SidebarStyle = 'dark' | 'light' | 'primary'
 
-/** 默认侧栏风格 */
-export const DEFAULT_SIDEBAR_STYLE: SidebarStyle = 'dark'
+/** 默认侧栏风格（出厂值见 src/config.ts） */
+export const DEFAULT_SIDEBAR_STYLE: SidebarStyle = DEFAULT_SETTINGS.sidebarStyle
 
 /** 设置面板里的侧栏风格选项（数组顺序即展示顺序） */
 export const SIDEBAR_STYLE_OPTIONS: Array<{ value: SidebarStyle; label: string }> = [
