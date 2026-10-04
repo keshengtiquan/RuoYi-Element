@@ -74,7 +74,8 @@ import {
   User,
   Users,
   Webhook,
-  Wrench
+  Wrench,
+  RefreshCcw
 } from '@lucide/vue'
 
 /**
@@ -170,7 +171,8 @@ const lucideIcons: Record<string, Component> = {
   User,
   Users,
   Webhook,
-  Wrench
+  Wrench,
+  RefreshCcw
 }
 
 /**

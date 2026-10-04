@@ -23,10 +23,15 @@
           toggleExpand
         }"
       >
-        <ElButton v-if="showReset" @click="handleReset">{{ resetText }}</ElButton>
         <ElButton v-if="showSearch" type="primary" :disabled="disabledSearch" @click="handleSearch">
+          <AppIcon name="Search" class="mr-1"></AppIcon>
           {{ searchText }}
         </ElButton>
+        <ElButton v-if="showReset" @click="handleReset">
+          <AppIcon name="RefreshCcw" class="mr-1"></AppIcon>
+          {{ resetText }}
+        </ElButton>
+
         <button
           v-if="showExpandButton(slotProps)"
           type="button"
@@ -79,7 +84,7 @@ const props = withDefaults(defineProps<SearchFormProps>(), {
   isExpand: false,
   defaultExpanded: false,
   showExpand: true,
-  buttonLeftLimit: 2
+  buttonLeftLimit: 3
 })
 const emit = defineEmits<SearchFormEmits>()
 
