@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import { useAppStore } from '@/stores/modules/app'
 import { applySidebarStyle, applyThemeColor } from '@/utils/theme'
 
@@ -16,5 +17,11 @@ watchEffect(() => applySidebarStyle(appStore.sidebarStyle))
 </script>
 
 <template>
-  <RouterView />
+  <!--
+    全局中文语言包：Element Plus 组件按需引入时不会走 app.use(ElementPlus)，
+    要靠 ElConfigProvider 注入 locale，否则分页显示的是「Total 20 / 20/page / Go to」。
+  -->
+  <ElConfigProvider :locale="zhCn">
+    <RouterView />
+  </ElConfigProvider>
 </template>
