@@ -12,7 +12,15 @@
           ElTable 只把「自己插槽里的 ElTableColumn」当成列（列序也按这里的 DOM 顺序算），
           所以列必须在这一层生成，不能包到别的插槽里去。
         -->
-        <TableColumns :columns="columns" />
+        <TableColumns :columns="columns">
+          <!--
+            页面写在 BasicTable 上的模板插槽要透传给列组件：
+            这样 `slots: { default: 'status' }` 或约定的 `#prop` / `#prop-header` 才能落到 ElTableColumn 上。
+          -->
+          <template v-for="(_, slotName) in $slots" :key="slotName" #[slotName]="slotProps">
+            <slot :name="slotName" v-bind="slotProps || {}" />
+          </template>
+        </TableColumns>
 
         <!-- 空数据：页面传了 #empty 就整块接管，否则用 ElEmpty 占位 -->
         <template #empty>

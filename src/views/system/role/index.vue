@@ -4,7 +4,7 @@
       <SearchForm v-model="query" :items="searchItems" @search="handleSearch" />
     </div>
     <div class="mt-2">
-      <BasicTable :columns="columns" />
+      <BasicTable :data="tableData" :columns="columns" :autoHeight="true"> </BasicTable>
     </div>
   </div>
 </template>
@@ -13,9 +13,12 @@
 import type { ColumnOption } from '@/components/BasicTable/types'
 import type { FormItem } from '@/components/Form'
 import BasicTable from '@/components/BasicTable/index.vue'
+import { getRoleListApi } from '@/api/role'
+import { type SysRole } from '@/types/entity'
 
 defineOptions({ name: 'SystemRole' })
 const query = ref<Record<string, any>>({})
+const tableData = ref<SysRole[]>([])
 const searchItems: FormItem[] = [
   { key: 'userName', label: '用户名称', type: 'input', placeholder: '请输入用户名称' },
   {
@@ -52,14 +55,15 @@ const columns: ColumnOption[] = [
   },
   {
     prop: 'roleName',
-    label: '角色名称'
+    label: '角色名称',
+    visible: true
   },
   {
-    prop: 'userRole',
+    prop: 'roleKey',
     label: '权限字符'
   },
   {
-    prop: 'sort',
+    prop: 'roleSort',
     label: '显示顺序'
   },
   {
@@ -68,4 +72,13 @@ const columns: ColumnOption[] = [
   }
 ]
 const handleSearch = () => {}
+
+const getTableData = async () => {
+  const data = await getRoleListApi()
+  tableData.value = data.rows
+}
+
+onMounted(async () => {
+  await getTableData()
+})
 </script>

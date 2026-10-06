@@ -64,6 +64,14 @@ export interface TableExpandScope {
   expandable: boolean
 }
 
+/**
+ * 列插槽的两种写法（二选一）：
+ * - 函数：自己用 `h` 渲染，返回 vnode / vnode 数组 / 字符串；
+ * - 字符串：页面上模板插槽的名字，用页面里的 `<template #xxx>` 渲染
+ *   （BasicTable 会把页面插槽透传给列组件）。
+ */
+export type ColumnSlot<Scope> = ((scope: Scope) => any) | string
+
 /** 表格列配置 */
 export interface ColumnOption<T = any> {
   /** 列的稳定标识：多列共用同一个 prop（或都没有 prop）时显式指定，避免 Vue key 冲突 */
@@ -98,22 +106,28 @@ export interface ColumnOption<T = any> {
   children?: ColumnOption<T>[]
   /** 单元格格式化（返回字符串或 VNode；提供了 default 插槽时以插槽为准） */
   formatter?: (row: T, column: TableColumnCtx, cellValue: any, index: number) => VNode | string
-  /** 列插槽（与模板插槽二选一，模板插槽优先） */
+  /**
+   * 列插槽，两种写法（二选一）：
+   * 1. 函数式：`slots: { default: (scope) => h('span', scope.row.status) }`，直接返回 vnode / 数组 / 字符串；
+   * 2. 插槽名：`slots: { default: 'status' }`，用页面上的模板插槽 `#status`；
+   * 不写 `slots` 时按约定自动匹配模板插槽：单元格 `#prop`、表头 `#prop-header`、展开图标 `#prop-expand`。
+   * 优先级：显式写的插槽名 > 约定模板插槽 > `slots` 里的函数 > ElTableColumn 默认渲染（prop / formatter）。
+   */
   slots?: {
     /**
      * 表头，等价于模板 `<template #prop-header>`。
-     * 注意：多个列共用同一个 key 时模板插槽会撞名，这种场景用函数式写法。
+     * 注意：多个列共用同一个 prop 时模板插槽会撞名，这种场景用函数式写法（或用 `id` 区分）。
      */
-    header?: (scope: TableHeaderScope) => any | string
+    header?: ColumnSlot<TableHeaderScope>
     /**
      * 单元格，等价于模板 `<template #prop>`。
-     * `type: 'expand'` 的列收到的是「当前行数据」本身（对齐 ElTable 原生），用于渲染展开行内容。
+     * `type: 'expand'` 的列用它渲染展开行内容，scope 与普通列一致（`{ row, $index, ... }`）。
      */
-    default?: (scope: TableCellScope<T>) => any | string
-    /** 展开列的箭头图标，不传用 Element Plus 自带的箭头 */
-    expand?: (scope: TableExpandScope) => any | string
+    default?: ColumnSlot<TableCellScope<T>>
+    /** 展开列的箭头图标，scope 是 `{ expanded, expandable }`；不传用 Element Plus 自带的箭头 */
+    expand?: ColumnSlot<TableExpandScope>
     /** 预留：行内编辑态的单元格（本次不渲染，后续迭代） */
-    edit?: (scope: TableCellScope<T>) => any | string
+    edit?: ColumnSlot<TableCellScope<T>>
   }
   /** ElTableColumn 的其余属性（selectable / reserveSelection / showOverflowTooltip / align …） */
   [key: string]: any
