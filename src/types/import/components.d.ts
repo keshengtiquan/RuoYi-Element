@@ -13,6 +13,8 @@ declare module 'vue' {
   export interface GlobalComponents {
     AppIcon: typeof import('./../../components/AppIcon/index.vue')['default']
     BasicForm: typeof import('./../../components/Form/BasicForm/index.vue')['default']
+    BasicTable: typeof import('./../../components/BasicTable/index.vue')['default']
+    Columns: typeof import('./../../components/BasicTable/columns.vue')['default']
     ElAlert: typeof import('element-plus/es')['ElAlert']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -51,11 +53,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchForm: typeof import('./../../components/Form/SearchForm/index.vue')['default']
-    Table: typeof import('./../../components/Table/index.vue')['default']
-    TableCellEditor: typeof import('./../../components/Table/components/TableCellEditor.vue')['default']
-    TableColumnSetting: typeof import('./../../components/Table/components/TableColumnSetting.vue')['default']
-    TablePagination: typeof import('./../../components/Table/components/TablePagination.vue')['default']
-    TableToolbar: typeof import('./../../components/Table/components/TableToolbar.vue')['default']
+    Tables: typeof import('./../../components/Tables/index.vue')['default']
   }
   export interface GlobalDirectives {
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']

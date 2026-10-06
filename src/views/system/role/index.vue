@@ -3,11 +3,16 @@
     <div class="search-bar">
       <SearchForm v-model="query" :items="searchItems" @search="handleSearch" />
     </div>
+    <div class="mt-2">
+      <BasicTable :columns="columns" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { ColumnOption } from '@/components/BasicTable/types'
 import type { FormItem } from '@/components/Form'
+import BasicTable from '@/components/BasicTable/index.vue'
 
 defineOptions({ name: 'SystemRole' })
 const query = ref<Record<string, any>>({})
@@ -39,6 +44,28 @@ const searchItems: FormItem[] = [
     hidden: (model) => model.status !== '1'
   }
 ]
-
+const columns: ColumnOption[] = [
+  {
+    type: 'index',
+    label: '序号',
+    width: 60
+  },
+  {
+    prop: 'roleName',
+    label: '角色名称'
+  },
+  {
+    prop: 'userRole',
+    label: '权限字符'
+  },
+  {
+    prop: 'sort',
+    label: '显示顺序'
+  },
+  {
+    prop: 'status',
+    label: '状态'
+  }
+]
 const handleSearch = () => {}
 </script>
