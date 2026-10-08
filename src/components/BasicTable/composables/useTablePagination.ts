@@ -7,7 +7,7 @@ export const DEFAULT_PAGINATION_OPTIONS: PaginationOptions = {
   background: true,
   layout: 'total, prev, pager, next, sizes, jumper',
   hideOnSinglePage: false,
-  size: 'default',
+  size: 'small',
   pagerCount: 7
 }
 

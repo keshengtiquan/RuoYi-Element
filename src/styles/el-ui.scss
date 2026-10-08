@@ -3,6 +3,34 @@
   --el-border-radius-small: 5px !important;
   --el-popover-border-radius: calc(var(--el-border-radius-base) + 4px);
 }
+.el-table {
+  --el-table-text-color: var(--el-text-color-primary) !important;
+  --el-table-header-text-color: var(--el-text-color-primary) !important;
+  --el-table-header-bg-color: var(--el-fill-color-lighter) !important;
+  border-radius: var(--el-border-radius-base) !important;
+}
+
+/*表格外框*/
+.el-table--border {
+  border: 1px solid var(--el-table-border-color) !important;
+}
+/*表格外框*/
+.el-table--border::before,
+.el-table--border::after,
+.el-table--border .el-table__inner-wrapper::after,
+.el-table--border .el-table__inner-wrapper::before {
+  display: none !important;
+}
+
+/* 左边线已由上面的真 border 负责：这个 patch 在 inner-wrapper 里 left:0（真 border 内侧 1px），
+   不关掉左边会比其它三边厚一倍，圆角处也会被裁出缺口 */
+.el-table--border .el-table__border-left-patch {
+  display: none !important;
+}
+
+.el-table--border .el-table__cell {
+  border-right: none !important;
+}
 
 .el-input .el-input__wrapper.is-focus,
 .el-textarea .el-textarea__inner:focus,

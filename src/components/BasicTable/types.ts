@@ -152,9 +152,47 @@ export interface BasicTableProps extends TableProps<Record<string, any>> {
    * 需要父容器有确定高度（例如页面根节点带 `h-full`），否则表格高度会算不出来。
    */
   autoHeight?: boolean
-  /** 预留：表格头部区域开关（后续迭代，目前不渲染头部区域） */
+  /** 顶部工具条开关：左侧是 `#header-left` 插槽（页面放按钮），右侧是工具图标，默认开 */
   showTableHeader?: boolean
+  /** 顶部工具条的图标按钮开关（不传 = 全部显示） */
+  tableHeaderOptions?: TableHeaderOptions
 }
+
+/** 表格密度（对应 ElTable 的 size） */
+export type TableDensity = 'large' | 'default' | 'small'
+
+/** 顶部工具条的图标按钮开关（右侧那一排），不传 = 全部显示 */
+export interface TableHeaderOptions {
+  /** 刷新：只抛 `refresh` 事件，取数由页面负责（组件不请求接口） */
+  refresh?: boolean
+  /** 下载：占位按钮，抛 `download` 事件，具体实现留给页面 */
+  download?: boolean
+  /** 打印：占位按钮，抛 `print` 事件，具体实现留给页面 */
+  print?: boolean
+  /** 密度：切换表格疏密（large / default / small） */
+  density?: boolean
+  /** 列设置：勾选列显隐（支持多级表头，勾父列会连子列一起切） */
+  columnSetting?: boolean
+  /** 全屏：整块表格（工具条 + 表格 + 分页）全屏 */
+  fullscreen?: boolean
+}
+
+/** 列设置面板里的一项 */
+export interface TableColumnSettingItem {
+  /** 列的唯一标识：`id` → `prop` → 原始下标路径 */
+  key: string
+  /** 面板里展示的名称（label 优先，没有 label 用 prop） */
+  label: string
+  /** 层级（多级表头用缩进展示） */
+  level: number
+  /** 当前是否显示（父列隐藏时子列算隐藏） */
+  visible: boolean
+  /** 所在层级的父列 key（顶层为 `''`）：只有同一层的列能互相拖拽排序 */
+  parentKey: string
+}
+
+/** 拖拽排序的落点：放到目标列前面还是后面 */
+export type ColumnDropPosition = 'before' | 'after'
 
 /** 组件事件：其余 ElTable 事件（selection-change / row-click / sort-change …）由 $attrs 原样转发 */
 export interface TableEmits {
@@ -162,6 +200,12 @@ export interface TableEmits {
   'update:pagination': [pagination: PaginationConfig]
   /** 页码或每页条数变化：payload 是合并后的完整分页状态，页面据此重新请求 */
   'page-change': [pagination: PaginationConfig]
+  /** 点了工具条的刷新：页面重新取数 */
+  refresh: []
+  /** 点了工具条的下载：占位事件，等了再实现 */
+  download: []
+  /** 点了工具条的打印：占位事件，等了再实现 */
+  print: []
 }
 
 /** 通过模板 ref 调用的方法（ElTable 常用能力的转发；实例还没挂载时安全降级，不抛错） */

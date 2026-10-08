@@ -1,10 +1,23 @@
 <template>
-  <div>
+  <div class="h-full flex flex-col">
     <div class="search-bar">
       <SearchForm v-model="query" :items="searchItems" @search="handleSearch" />
     </div>
-    <div class="mt-2">
-      <BasicTable :data="tableData" :columns="columns" :autoHeight="true"> </BasicTable>
+    <div class="mt-2 flex-1">
+      <BasicTable
+        :data="tableData"
+        :columns="columns"
+        :autoHeight="true"
+        border
+        :pagination="pagination"
+        @refresh="getTableData"
+      >
+        <template #header-left>
+          <ElButton type="primary">新增</ElButton>
+          <ElButton type="primary">编辑</ElButton>
+          <ElButton type="primary">删除</ElButton>
+        </template>
+      </BasicTable>
     </div>
   </div>
 </template>
@@ -19,6 +32,11 @@ import { type SysRole } from '@/types/entity'
 defineOptions({ name: 'SystemRole' })
 const query = ref<Record<string, any>>({})
 const tableData = ref<SysRole[]>([])
+const pagination = ref({
+  current: 1,
+  size: 10,
+  total: 0
+})
 const searchItems: FormItem[] = [
   { key: 'userName', label: '用户名称', type: 'input', placeholder: '请输入用户名称' },
   {
@@ -56,7 +74,8 @@ const columns: ColumnOption[] = [
   {
     prop: 'roleName',
     label: '角色名称',
-    visible: true
+    visible: true,
+    resizable: true
   },
   {
     prop: 'roleKey',
@@ -76,6 +95,7 @@ const handleSearch = () => {}
 const getTableData = async () => {
   const data = await getRoleListApi()
   tableData.value = data.rows
+  pagination.value.total = data.total
 }
 
 onMounted(async () => {

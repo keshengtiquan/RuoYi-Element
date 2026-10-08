@@ -53,6 +53,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchForm: typeof import('./../../components/Form/SearchForm/index.vue')['default']
+    TableHeader: typeof import('./../../components/BasicTable/TableHeader.vue')['default']
     Tables: typeof import('./../../components/Tables/index.vue')['default']
   }
   export interface GlobalDirectives {

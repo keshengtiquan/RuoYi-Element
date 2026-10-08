@@ -1,23 +1,34 @@
 <template>
-  <!--
-    表格容器：只做 UI。
-    - 数据与分页状态都由页面持有：分页用 v-model:pagination，交互通过 page-change 抛出；
-    - 列全部由 columns 描述，递归渲染成 ElTableColumn（多级表头 = 带 children 的列）；
-    - autoHeight：容器是撑满父级的纵向 flex，表格占剩余高度、分页被顶到底部。
-  -->
-  <div :class="rootClass">
-    <div :class="bodyClass">
+  <div
+    ref="rootRef"
+    :class="[rootClass, isFullscreen ? 'bg-(--el-bg-color) p-3' : '']"
+    class="box-border px-4 pt-2 pb-4 bg-(--el-bg-color) rounded-lg border border-(--el-border-color)"
+  >
+    <!-- 顶部工具条：左侧 #header-left 插槽，右侧工具图标（刷新 / 下载 / 打印 / 密度 / 列设置 / 全屏） -->
+    <TableHeader
+      v-if="showTableHeader"
+      :options="tableHeaderOptions"
+      :density="activeDensity"
+      :is-fullscreen="isFullscreen"
+      :column-items="columnSettingItems"
+      @refresh="emit('refresh')"
+      @download="emit('download')"
+      @print="emit('print')"
+      @density-change="setDensity"
+      @column-toggle="setColumnVisible"
+      @column-reorder="moveColumn"
+      @column-reset="resetColumns"
+      @fullscreen-toggle="toggleFullscreen"
+    >
+      <template #left>
+        <slot name="header-left" />
+      </template>
+    </TableHeader>
+
+    <div :class="bodyClass" class="rounded-(--el-border-radius-base)">
       <ElTable ref="elTableRef" v-loading="loading" v-bind="mergedTableProps">
-        <!--
-          ElTable 只把「自己插槽里的 ElTableColumn」当成列（列序也按这里的 DOM 顺序算），
-          所以列必须在这一层生成，不能包到别的插槽里去。
-        -->
-        <TableColumns :columns="columns">
-          <!--
-            页面写在 BasicTable 上的模板插槽要透传给列组件：
-            这样 `slots: { default: 'status' }` 或约定的 `#prop` / `#prop-header` 才能落到 ElTableColumn 上。
-          -->
-          <template v-for="(_, slotName) in $slots" :key="slotName" #[slotName]="slotProps">
+        <TableColumns :columns="renderColumns">
+          <template v-for="(_, slotName) in columnsSlots" :key="slotName" #[slotName]="slotProps">
             <slot :name="slotName" v-bind="slotProps || {}" />
           </template>
         </TableColumns>
@@ -51,14 +62,18 @@
 import type { TableInstance as ElTableInstance } from 'element-plus'
 import { useTablePagination } from './composables/useTablePagination'
 import { useTableExpose } from './composables/useTableExpose'
+import { useTableHeader } from './composables/useTableHeader'
 import type { BasicTableProps, PaginationConfig, TableEmits, TableInstance } from './types'
 import TableColumns from './columns.vue'
+import TableHeader from './TableHeader.vue'
 
 /**
  * 表格封装（全局可用名为 `Tables`）。
  *
  * - `columns` 是唯一的列描述入口：选择列 / 展开列 / 序号列 / 分组表头 / formatter / 插槽都在里面配；
  * - 列内容既能写在 `columns[].slots` 里，也能用模板插槽 `#prop`（模板插槽优先）；
+ * - 顶部工具条 `showTableHeader`：左侧 `#header-left` 插槽放页面按钮，右侧是刷新 / 下载 / 打印 /
+ *   密度 / 列设置 / 全屏；刷新只抛事件，取数仍然由页面负责；
  * - 分页只负责「显示 + 把操作换算成新状态」，取数由页面在 `page-change` 里完成；
  * - `class` / `style` 以及 ElTable 的事件（selection-change / sort-change …）都透传给 ElTable。
  */
@@ -79,7 +94,38 @@ const props = withDefaults(defineProps<BasicTableProps>(), {
 const emit = defineEmits<TableEmits>()
 
 const elTableRef = useTemplateRef<ElTableInstance>('elTableRef')
+const rootRef = useTemplateRef<HTMLElement>('rootRef')
 const attrs = useAttrs()
+const slots = useSlots()
+
+/**
+ * 顶部工具条的状态：列显隐（在副本上盖 visible）、密度、全屏。
+ * 刷新 / 下载 / 打印 不在这里实现，只把事件抛给页面。
+ */
+const {
+  renderColumns,
+  columnSettingItems,
+  setColumnVisible,
+  moveColumn,
+  resetColumns,
+  activeDensity,
+  setDensity,
+  isFullscreen,
+  toggleFullscreen
+} = useTableHeader({
+  columns: () => props.columns,
+  size: () => props.size,
+  fullscreenTarget: () => rootRef.value
+})
+
+/** 透传给列组件的插槽：工具条自己的 `#header-left` 不再往列里传 */
+const columnsSlots = computed(() => {
+  const result: Record<string, unknown> = {}
+  for (const [name, slot] of Object.entries(slots)) {
+    if (name !== 'header-left') result[name] = slot
+  }
+  return result
+})
 
 /** 序号列：分页时接着上一页数，从 (current - 1) * size + 1 开始 */
 // const getGlobalIndex = (index: number): number => {
@@ -118,7 +164,8 @@ const OWN_TABLE_PROPS = new Set([
   'emptyHeight',
   'emptyText',
   'autoHeight',
-  'showTableHeader'
+  'showTableHeader',
+  'tableHeaderOptions'
 ])
 
 /** autoHeight 时把高度交给 flex 容器；页面显式传了 height 就尊重页面的高度 */
@@ -131,12 +178,14 @@ const mergedTableProps = computed(() => {
     if (!OWN_TABLE_PROPS.has(key) && value !== undefined) tableProps[key] = value
   }
   tableProps.height = resolvedHeight.value
+  // 密度：工具条上选过的优先，没选过就用页面传的 size
+  tableProps.size = activeDensity.value
   return tableProps
 })
 
 /** autoHeight：容器撑满父级，表格占剩余空间，分页自然吸底 */
 const rootClass = computed(() => (props.autoHeight ? 'flex h-full min-h-0 flex-col' : ''))
-const bodyClass = computed(() => (props.autoHeight ? 'min-h-0 flex-1' : ''))
+const bodyClass = computed(() => (props.autoHeight ? 'min-h-0 flex-1 ' : ''))
 
 defineExpose<TableInstance>(useTableExpose(elTableRef))
 </script>

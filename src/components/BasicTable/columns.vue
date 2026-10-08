@@ -1,8 +1,4 @@
 <template>
-  <!--
-    列渲染入口：所有列都由 columns 描述，真正的递归在下面的 ColumnsNode 里。
-    这一层只负责收 props / 插槽，递归组件保持「函数式」，原因见 ColumnsNode 的注释。
-  -->
   <ColumnsNode :columns="props.columns" />
 </template>
 
@@ -114,17 +110,41 @@ const buildColumnSlots = (column: ColumnOption): Record<string, SlotRender> => {
 // ---------------------------------------------------------------------------
 
 /**
+ * 分组列的子列签名（只算显示出来的列，含递归）。
+ *
+ * 为什么要它：ElTableColumn 的分组子列是「挂载时收集一次」的 ——
+ * 它内部渲染子列的那个组件（element-plus 的 TableColumnRenderer）没有 props、也没有响应式依赖，
+ * 父组件再渲染时它不会重新执行，`default` 插槽里那批子列 vnode 就被冻住了。
+ * 所以子列集合一变（比如列设置里勾掉一个子列），必须让分组列换一个 key 重新挂载，
+ * Element Plus 才会重新登记子列；把整棵子树的签名拼进 key，嵌套分组也能一起重挂载。
+ */
+const childrenSignature = (columns: ColumnOption[]): string =>
+  columns
+    .filter((column) => column.visible !== false)
+    .map((column, index) => {
+      const key = column.id ?? column.prop ?? column.label ?? ''
+      const body = column.children?.length ? `${key}[${childrenSignature(column.children)}]` : key
+      // 下标一起进签名：顺序变化（拖拽排序）也要能触发重挂载
+      return `${index}:${body}`
+    })
+    .join(',')
+
+/**
  * 渲染一列。
  * - 带 children 的列 = 分组表头：子列必须渲染在它的默认插槽里，Element Plus 才会登记成子列；
  * - 其余列 = 普通列：插槽交给 ElTableColumn，没有插槽时它自己按 prop / formatter 渲染。
  */
 const renderColumn = (column: ColumnOption, index: number): VNode => {
-  const columnProps = { ...cleanColumnProps(column), key: column.id ?? column.prop ?? index }
+  const baseKey = column.id ?? column.prop ?? index
   const children = column.children
   if (children && children.length > 0) {
+    const columnProps = {
+      ...cleanColumnProps(column),
+      key: `${baseKey}#${childrenSignature(children)}`
+    }
     return h(ElTableColumn, columnProps, { default: () => [h(ColumnsNode, { columns: children })] })
   }
-  return h(ElTableColumn, columnProps, buildColumnSlots(column))
+  return h(ElTableColumn, { ...cleanColumnProps(column), key: baseKey }, buildColumnSlots(column))
 }
 
 /** 渲染一组列：visible: false 的列直接不生成（多级表头的子列同样生效） */
