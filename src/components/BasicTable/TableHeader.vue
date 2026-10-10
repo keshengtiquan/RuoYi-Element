@@ -32,17 +32,6 @@
         placement="bottom-end"
         @command="handleDensity"
       >
-        <!--
-          触发槽里只能放「一个普通元素」：ElDropdown / ElPopover / ElTooltip 内部都用 ElOnlyChild
-          把 id / role / tabindex / onClick / aria-* / ref 合并到槽里那唯一的 vnode 上
-          （cloneVNode(child, attrs) + v-forward-ref 指令），只有「根是单个元素的组件」才吃得下这些属性。
-          所以这里用 span 当触发元素，按钮连同 tooltip 一起放进 span 里：
-          点击从按钮冒泡到 span → 下拉照常打开；tooltip 只认自己的直接子节点（按钮），互不打扰。
-          反面例子：把 ElTooltip 直接放在触发槽里（或包在 ElPopover 外面）—— ElTooltip/ElPopover
-          的根是 Fragment（trigger + content 两个节点），属性与 ref 都落不到元素上，
-          Vue 会警告 "Extraneous non-props attributes" / "Runtime directive used on component with non-element root node"，
-          表现就是「点了没反应」。
-        -->
         <span class="inline-flex">
           <ElTooltip content="密度" placement="top" :show-after="200">
             <button

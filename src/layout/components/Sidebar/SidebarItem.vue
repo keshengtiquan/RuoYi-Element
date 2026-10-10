@@ -31,7 +31,11 @@
     </ElTooltip>
 
     <SidebarCollapse :show="expanded && !collapsed">
-      <div class="flex flex-col gap-1 pt-1">
+      <!--
+        分组底色要铺满整个侧栏宽度，但左右留白 6px 是父级 <nav> 的 px-1.5（作用于整列菜单），
+        所以这里用 -mx-1.5 把底色撑到侧栏边缘，再用 px-1.5 把子项推回原来的位置。
+      -->
+      <div class="-mx-1.5 flex flex-col gap-1 bg-(--sidebar-group-bg-color) px-1.5 pt-1">
         <SidebarItem
           v-for="(child, index) in menuChildren"
           :key="`${child.path}-${index}`"

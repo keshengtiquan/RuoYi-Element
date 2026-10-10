@@ -11,6 +11,7 @@ declare global {
   const EffectScope: typeof import('vue').EffectScope
   const ElMessage: typeof import('element-plus/es').ElMessage
   const ElMessageBox: typeof import('element-plus/es').ElMessageBox
+  const ElSwitch: typeof import('element-plus/es').ElSwitch
   const ElTag: typeof import('element-plus/es').ElTag
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const asyncComputed: typeof import('@vueuse/core').asyncComputed

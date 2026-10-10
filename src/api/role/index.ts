@@ -1,5 +1,5 @@
 import type { SysRole } from '@/types/entity'
-import { getPage } from '@/utils/http'
+import { getPage, put } from '@/utils/http'
 import type { RoleListParams, RoleListResult } from './types'
 
 // 类型定义统一放在 ./types，这里再导出一次，方便直接从 '@/api/role' 引用
@@ -27,4 +27,8 @@ export type { RoleListDateRange, RoleListParams, RoleListResult, RoleStatus } fr
  */
 export const getRoleListApi = (params?: RoleListParams): Promise<RoleListResult> => {
   return getPage<SysRole>('/system/role/list', params)
+}
+
+export const changeStatusApi = (data: { roleId: number; status: string }) => {
+  return put(`/system/role/changeStatus`, data)
 }

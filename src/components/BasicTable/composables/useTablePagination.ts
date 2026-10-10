@@ -4,7 +4,7 @@ import type { PaginationConfig, PaginationOptions } from '../types'
 export const DEFAULT_PAGINATION_OPTIONS: PaginationOptions = {
   pageSizes: [10, 20, 30, 50, 100],
   align: 'center',
-  background: true,
+  background: false,
   layout: 'total, prev, pager, next, sizes, jumper',
   hideOnSinglePage: false,
   size: 'small',

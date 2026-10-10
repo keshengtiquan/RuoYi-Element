@@ -1,8 +1,9 @@
 @import 'tailwindcss';
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --sidebar-bg-color: #141414;
+  --sidebar-bg-color: #191a23;
   --sidebar-text-color: #fff;
   --sidebar-hover-bg-color: #292a2e;
   --sidebar-hover-text-color: #fff;
@@ -10,6 +11,7 @@
   --sidebar-active-bg-color: var(--el-color-primary);
   --sidebar-active-text-color: var(--el-color-white);
   --sidebar-group-active-color: #fff;
+  --sidebar-group-bg-color: #101117;
 }
 
 /* 亮色侧栏：跟着页面底色走（暗色主题下就是暗色面板），分界线改用 Element 的边框色 */
