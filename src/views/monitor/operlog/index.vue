@@ -18,7 +18,9 @@
       按当前高度算出来的表格 body 高度）为下限，查询栏展开后表格就不肯收缩，
       于是整页出现滚动条。加上它表格才会跟着变矮，ElTable 自己的 resize 监听会重算 body 高度。
     -->
-    <div class="mt-2 min-h-0 flex-1">
+    <div
+      class="mt-2 min-h-0 flex-1 rounded-lg px-4 pt-2 pb-4 bg-(--el-bg-color) border border-(--el-border-color)"
+    >
       <BasicTable
         v-model:pagination="pagination"
         ref="tableRef"

@@ -2,7 +2,7 @@
   <div
     ref="rootRef"
     :class="[rootClass, isFullscreen ? 'bg-(--el-bg-color) p-3' : '']"
-    class="box-border px-4 pt-2 pb-4 bg-(--el-bg-color) rounded-lg border border-(--el-border-color)"
+    class="box-border bg-(--el-bg-color)"
   >
     <!-- 顶部工具条：左侧 #header-left 插槽，右侧工具图标（刷新 / 下载 / 打印 / 密度 / 列设置 / 全屏） -->
     <TableHeader

@@ -3,7 +3,9 @@
     <div class="search-bar">
       <SearchForm v-model="query" :items="searchItems" @search="handleSearch" />
     </div>
-    <div class="mt-2 flex-1">
+    <div
+      class="mt-2 flex-1 rounded-lg px-4 pt-2 pb-4 bg-(--el-bg-color) border border-(--el-border-color)"
+    >
       <BasicTable
         ref="basicTableRef"
         :data="tableData"
